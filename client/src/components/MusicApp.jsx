@@ -28,6 +28,7 @@ import {
   Search,
   Favorite,
   PlaylistPlay,
+  NoteAlt,
 } from "@mui/icons-material";
 import { keyframes } from "@emotion/react";
 
@@ -147,12 +148,33 @@ function MusicApp() {
           { text: "Search", icon: <Search /> },
           { text: "My Favorites", icon: <Favorite /> },
           { text: "Playlists", icon: <PlaylistPlay /> },
+          { text: "Journal", icon: <NoteAlt /> },
         ].map((item, index) => (
           <ListItem
             button
             key={index}
-            component={item.text === "Search" || item.text === "Home" || item.text === "My Favorites"? Link : "div"}
-            to={item.text === "Search" ? "/search" : item.text === "Home" ? "/music" : item.text==="My Favorites"?"/favorites":"#"}
+            component={
+              item.text === "Search" ||
+              item.text === "Home" ||
+              item.text === "My Favorites" ||
+              item.text === "Playlists" ||
+              item.text === "Journal"
+                ? Link
+                : "div"
+            }
+            to={
+              item.text === "Search"
+                ? "/search"
+                : item.text === "Home"
+                ? "/music"
+                : item.text === "My Favorites"
+                ? "/favorites"
+                : item.text === "Playlists"
+                ? "/playlists"
+                : item.text === "Journal"
+                ? "/diary"
+                : "#"
+            }
             sx={{
               "&:hover": { backgroundColor: "white", borderRadius: "10px" },
             }}
@@ -474,7 +496,6 @@ function MusicApp() {
                 }
               }
             `}</style>
-            
           </Box>
         </Box>
       </Box>
