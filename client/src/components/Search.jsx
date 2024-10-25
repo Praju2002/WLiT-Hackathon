@@ -181,7 +181,10 @@ function SoundSearch() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ mb: 3, width: "100%", maxWidth: 400 }}
+            
+            
           />
+          
           <Box display="flex" alignItems="center" justifyContent="flex-end" mt={4}>
             <VolumeUp sx={{ mr: 1 }} />
             <Slider
