@@ -1,69 +1,83 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
   Card,
   CardContent,
-  Button,
   IconButton,
   Grid,
   TextField,
+  Slider,
   List,
   ListItem,
   ListItemText,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Home, Search, Favorite, PlaylistPlay } from "@mui/icons-material";
-import { PlayArrow } from "@mui/icons-material";
+import { Home, Search, Favorite, PlaylistPlay, VolumeUp, Pause, PlayArrow } from "@mui/icons-material";
 
 const categories = ["White Noise", "Rain", "Forest", "Ocean Waves", "Ambient"];
 
-function SoundSearch() {  // Renamed here
+function SoundSearch() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [categoryIndex, setCategoryIndex] = useState(0);
+  const [categoryIndex, setCategoryIndex] = useState(null);
   const [currentAudio, setCurrentAudio] = useState(null);
   const [playing, setPlaying] = useState(false);
-  // Simulating fetching sounds for now
+  const [volume, setVolume] = useState(0.5);
 
-  const fetchSounds = async (category) => {
-    setLoading(true);
-    try {
-      // Stop the current audio if it exists
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-      }
 
-      // Create a new audio object and play it
-      const newAudio = new Audio(
-        `/audio/${category.toLowerCase().replace(" ", "_")}.mp3`
-      );
-      newAudio.play();
-      setCurrentAudio(newAudio);
-    } catch (error) {
-      console.error("Error fetching sounds:", error);
-    } finally {
-      setLoading(false);
+  // Play or pause sound based on the selected category
+  const playSound = (category, index) => {
+    // Pause and reset any currently playing audio
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;  // Reset the audio position
+      setCurrentAudio(null);
+      setPlaying(false);
     }
-  };
-  const handleCategoryChange = (index) => {
+
+    // If the clicked category is already playing, pause it
+    if (categoryIndex === index && playing) {
+      setPlaying(false);
+      return;
+    }
+
+    // Set up new audio if a different category is clicked or current audio is paused
+    const newAudio = new Audio(`/audio/${category.toLowerCase().replace(" ", "_")}.mp3`);
+    newAudio.volume = volume;
+    newAudio.play();
+
+    setCurrentAudio(newAudio);
+    setPlaying(true);
     setCategoryIndex(index);
-    fetchSounds(categories[index]);
+
+    // Set playing to false once audio ends
+    newAudio.onended = () => {
+      setPlaying(false);
+      setCurrentAudio(null);
+    };
   };
+
   const handlePlayPause = () => {
-    setPlaying(!playing);
     if (currentAudio) {
       if (playing) {
         currentAudio.pause();
       } else {
         currentAudio.play();
       }
+      setPlaying(!playing);  // Toggle play/pause state
     }
   };
 
 
-  // Filter categories based on search term
+
+  const handleVolumeChange = (event, newValue) => {
+    setVolume(newValue);
+    if (currentAudio) {
+      currentAudio.volume = newValue;
+    }
+  };
+
   const filteredCategories = categories.filter((category) =>
     category.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -172,18 +186,18 @@ function SoundSearch() {  // Renamed here
             {filteredCategories.map((category, index) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                 <Card
-                  sx={{
-                    backgroundColor: "#4186b5",
-                    color: "#b3b3b3",
-                    cursor: "pointer",
-                    borderRadius: "20px",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                    "&:hover": {
-                      backgroundColor: "#66acce",
-                      color: "white",
-                    },
-                  }}
-                  onClick={() => handleCategoryChange(index)}
+                sx={{
+                  backgroundColor: "#4186b5",
+                  color: "#b3b3b3",
+                  cursor: "pointer",
+                  borderRadius: "20px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  "&:hover": {
+                    backgroundColor: "#66acce",
+                    color: "white",
+                  },
+                }}
+                  onClick={() => playSound(category, index)}
                 >
                   <CardContent>
                     <Typography
@@ -199,19 +213,38 @@ function SoundSearch() {  // Renamed here
                       {category}
                     </Typography>
                     <Box display="flex" justifyContent="center" mt={2}>
-                      <IconButton onClick={handlePlayPause}>
-                        <PlayArrow />
-                      </IconButton>
+                    <IconButton
+  onClick={(event) => {
+    event.stopPropagation();
+    categoryIndex === index ? handlePlayPause() : playSound(category, index);
+  }}
+>
+  {playing && categoryIndex === index ? <Pause /> : <PlayArrow />}
+</IconButton>
+
+
                     </Box>
                   </CardContent>
                 </Card>
               </Grid>
             ))}
           </Grid>
+
+          <Box display="flex" alignItems="center" justifyContent="center" mt={4}>
+            <VolumeUp sx={{ mr: 1 }} />
+            <Slider
+              value={volume}
+              min={0}
+              max={1}
+              step={0.01}
+              onChange={handleVolumeChange}
+              sx={{ width: "80%", maxWidth: 300 }}
+            />
+          </Box>
         </Box>
       </Box>
     </Box>
   );
 }
 
-export default SoundSearch;  // Updated export name
+export default SoundSearch;
