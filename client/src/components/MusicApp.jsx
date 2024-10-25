@@ -30,7 +30,7 @@ import {
   PlaylistPlay,
 } from "@mui/icons-material";
 import { keyframes } from "@emotion/react";
-import axios from "axios"; // Ensure axios is imported
+
 
 const categories = ["White Noise", "Rain", "Forest", "Ocean Waves", "Ambient"];
 
