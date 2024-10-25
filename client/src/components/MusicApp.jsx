@@ -1,6 +1,8 @@
+
 import React, { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+
 import {
   AppBar,
   Toolbar,
@@ -14,30 +16,54 @@ import {
   Button,
   Slider,
   IconButton,
-
   CircularProgress,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Menu as MenuIcon, PlayArrow, SkipNext, SkipPrevious, Home, Search, Favorite, PlaylistPlay } from "@mui/icons-material";
+import {
+  Menu as MenuIcon,
+  PlayArrow,
+  SkipNext,
+  SkipPrevious,
+  Home,
+  Search,
+  Favorite,
+  PlaylistPlay,
+} from "@mui/icons-material";
 import { keyframes } from "@emotion/react";
+import axios from "axios"; // Ensure axios is imported
+
 const categories = ["White Noise", "Rain", "Forest", "Ocean Waves", "Ambient"];
 
 function MusicApp() {
   const [categoryIndex, setCategoryIndex] = useState(0);
-  // const [drawerOpen, setDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(30);
+
+  const [currentAudio, setCurrentAudio] = useState(null);
+
   const [sounds, setSounds] = useState([]);
+
 
   useEffect(() => {
     fetchSoundsByCategory(categories[categoryIndex]);
   }, [categoryIndex]);
+
   const fetchSoundsByCategory = async (category) => {
     setLoading(true);
     try {
-      const response = await axios.get(`/api/sounds/${category}`);
-      setSounds(response.data); // Set sounds fetched from API
+      // Stop the current audio if it exists
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+
+      // Create a new audio object and play it
+      const newAudio = new Audio(
+        `/audio/${category.toLowerCase().replace(" ", "_")}.mp3`
+      );
+      newAudio.play();
+      setCurrentAudio(newAudio);
     } catch (error) {
       console.error("Error fetching sounds:", error);
     } finally {
@@ -55,6 +81,13 @@ function MusicApp() {
 
   const handlePlayPause = () => {
     setPlaying(!playing);
+    if (currentAudio) {
+      if (playing) {
+        currentAudio.pause();
+      } else {
+        currentAudio.play();
+      }
+    }
   };
 
   const drawerContent = (
@@ -69,24 +102,45 @@ function MusicApp() {
       }}
     >
       <List>
-        {[{ text: "Home", icon: <Home /> },
-        { text: "Search", icon: <Search /> },
-        { text: "My Favorites", icon: <Favorite /> },
-        { text: "Playlists", icon: <PlaylistPlay /> }].
-          map((item, index) => (
-            <ListItem button key={index} component={item.text === "Search" ? Link : "div"} to={item.text === "Search" ? "/search" : "#"} sx={{ "&:hover": { backgroundColor: "white", borderRadius: "10px" } }}>
-              {item.icon}
-              <ListItemText primary={item.text} sx={{ color: "black", fontFamily: "Poppins, sans-serif", marginLeft: "15px" }} />
-            </ListItem>
-          ))}
+        {[
+          { text: "Home", icon: <Home /> },
+          { text: "Search", icon: <Search /> },
+          { text: "My Favorites", icon: <Favorite /> },
+          { text: "Playlists", icon: <PlaylistPlay /> },
+        ].map((item, index) => (
+          <ListItem
+            button
+            key={index}
+            component={item.text === "Search" ? Link : "div"}
+            to={item.text === "Search" ? "/search" : "#"}
+            sx={{
+              "&:hover": { backgroundColor: "white", borderRadius: "10px" },
+            }}
+          >
+            {item.icon}
+            <ListItemText
+              primary={item.text}
+              sx={{
+                color: "black",
+                fontFamily: "Poppins, sans-serif",
+                marginLeft: "15px",
+              }}
+            />
+          </ListItem>
+        ))}
       </List>
     </Box>
   );
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", backgroundColor: "#f9fafb", minHeight: "100vh" }}>
-
-
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#f9fafb",
+        minHeight: "100vh",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -130,7 +184,10 @@ function MusicApp() {
           >
             {loading ? "Loading..." : `${categories[categoryIndex]} Sounds`}
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3, color: "#616161", fontSize: "1rem" }}>
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: "#616161", fontSize: "1rem" }}
+          >
             7 Tracks | 00hr:53min:12sec
           </Typography>
 
@@ -150,11 +207,15 @@ function MusicApp() {
             onClick={handlePlayPause}
           >
             {playing ? "Pause" : "Play"}
-            <IconButton sx={{ color: "black" }} aria-label={playing ? "Pause" : "Play"}>
+            <IconButton
+              sx={{ color: "black" }}
+              aria-label={playing ? "Pause" : "Play"}
+            >
               <PlayArrow />
             </IconButton>
           </Button>
           <Box sx={{ mb: 3, textAlign: "center" }}>
+
             <Typography variant="h6" sx={{ fontFamily: "Poppins, sans-serif", fontWeight: 500, color: "#1c2a48" }}>
               How are you feeling?
             </Typography>
@@ -166,6 +227,7 @@ function MusicApp() {
               <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😍</Typography>
             </Box>
           </Box>
+
 
 
           {/* Category Cards */}
@@ -187,6 +249,7 @@ function MusicApp() {
               <Card
                 key={index}
                 sx={{
+
                   width: {
                     xs: "30%",  // 3 cards per row on extra small (mobile) screens
                     sm: "30%",  // 3 cards per row on small screens
@@ -198,6 +261,7 @@ function MusicApp() {
                   height: "auto",
                   backgroundColor: categoryIndex === index ? "#66acce" : "#4186b5",
                   color: categoryIndex === index ? "white" : "#b3b3b3",
+
                   cursor: "pointer",
                   transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
                   borderRadius: "20px",
@@ -246,9 +310,11 @@ function MusicApp() {
                   {/* Image with Play Button Overlay */}
                   <Box
                     sx={{
+
                       height: "120px",
                       background: `url('/path_to_image/${category.toLowerCase()}.jpg') no-repeat center/cover`,
                       borderRadius: "12px",
+
                       marginTop: "10px",
                       position: "relative",
                       "&:hover .playButton": {
@@ -323,6 +389,7 @@ function MusicApp() {
           </Box>
 
 
+
         </Box>
       </Box>
 
@@ -346,7 +413,11 @@ function MusicApp() {
           <IconButton sx={{ color: "black" }} aria-label="previous">
             <SkipPrevious />
           </IconButton>
-          <IconButton sx={{ color: "black" }} aria-label={playing ? "Pause" : "Play"} onClick={handlePlayPause}>
+          <IconButton
+            sx={{ color: "black" }}
+            aria-label={playing ? "Pause" : "Play"}
+            onClick={handlePlayPause}
+          >
             <PlayArrow />
           </IconButton>
           <IconButton sx={{ color: "black" }} aria-label="next">
@@ -355,7 +426,12 @@ function MusicApp() {
         </Box>
         <Box sx={{ width: "150px" }}>
           <Typography>Volume</Typography>
-          <Slider value={volume} onChange={(event, newValue) => setVolume(newValue)} sx={{ color: "black" }} aria-label="volume" />
+          <Slider
+            value={volume}
+            onChange={(event, newValue) => setVolume(newValue)}
+            sx={{ color: "black" }}
+            aria-label="volume"
+          />
         </Box>
       </Box>
 
