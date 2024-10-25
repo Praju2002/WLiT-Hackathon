@@ -17,6 +17,7 @@ import {
   IconButton,
   CircularProgress,
 } from "@mui/material";
+import { Pause } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import {
   Menu as MenuIcon,
@@ -47,7 +48,7 @@ function MusicApp() {
     fetchSoundsByCategory(categories[categoryIndex]);
   }, [categoryIndex]);
 
-  const fetchSoundsByCategory = async (category) => {
+  const fetchSoundsByCategory = async (category,index) => {
     setLoading(true);
     try {
       if (currentAudio) {
@@ -57,8 +58,9 @@ function MusicApp() {
       const filePath = `/audio/${category.toLowerCase().replace(" ", "_")}.mp3`;
       console.log(`Fetching audio file: ${filePath}`);
       const newAudio = new Audio(filePath);
-      newAudio.play();
+      newAudio.volume = volume / 100;
       setCurrentAudio(newAudio);
+      
     } catch (error) {
       console.error("Error fetching sounds:", error);
     } finally {
@@ -71,19 +73,56 @@ function MusicApp() {
     setTimeout(() => {
       setCategoryIndex(index);
       setLoading(false);
-    }, 1000); // Simulating a loading time
+    },1); // Simulating a loading time
   };
 
+ 
+  
+  // Event Listener to reset playing state when audio ends
+
+  
+  
+  const playSound = (category, index) => {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      setCurrentAudio(null);
+      setPlaying(false);
+    }
+    if (categoryIndex === index && playing) {
+      setPlaying(false);
+      return;
+    }
+    const filePath = `/audio/${category.toLowerCase().replace(" ", "_")}.mp3`;
+    const newAudio = new Audio(filePath);
+    newAudio.volume = volume / 100;
+    newAudio.volume = volume;
+    newAudio.play();
+    setCurrentAudio(newAudio);
+    setCategoryIndex(index);
+    setPlaying(true);
+    newAudio.onended = () => {
+      setPlaying(false);
+      setCurrentAudio(null);
+    };
+  };
   const handlePlayPause = () => {
-    setPlaying(!playing);
     if (currentAudio) {
       if (playing) {
         currentAudio.pause();
       } else {
         currentAudio.play();
       }
+      setPlaying(!playing);  // Toggle play/pause state
     }
   };
+   const handleVolumeChange = (event, newValue) => {
+    setVolume(newValue);
+    if (currentAudio) {
+      currentAudio.volume = newValue;
+    }
+  };
+
   const handleFavoriteToggle = (category) => {
     setFavorites((prevFavorites) =>
       prevFavorites.includes(category)
@@ -349,18 +388,23 @@ function MusicApp() {
                     {category}
                   </Typography>
                   <IconButton
-                    onClick={() => handleFavoriteToggle(category)}
-                    sx={{ position: "absolute", top: 10, right: 10 }}
+
+                onClick={() => handleFavoriteToggle(category)}
+                sx={{ position: "absolute", top: 10, right: 10 }}
+              >
+                <Favorite color={favorites.includes(category) ? "error" : "disabled"} />
+              </IconButton>
+              <IconButton
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      categoryIndex === index ? handlePlayPause() : playSound(category, index);
+                    }}
                   >
-                    <Favorite
-                      color={
-                        favorites.includes(category) ? "error" : "disabled"
-                      }
-                    />
-                  </IconButton>
-                  <IconButton onClick={() => setPlaying(!playing)}>
-                    <PlayArrow />
-                  </IconButton>
+                    {playing && categoryIndex === index ? <Pause /> : <PlayArrow />}
+                  
+              
+              </IconButton>
+
 
                   {/* Artist Name */}
                   <Typography
