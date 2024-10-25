@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
@@ -31,7 +30,6 @@ import {
 } from "@mui/icons-material";
 import { keyframes } from "@emotion/react";
 
-
 const categories = ["White Noise", "Rain", "Forest", "Ocean Waves", "Ambient"];
 
 function MusicApp() {
@@ -44,7 +42,6 @@ function MusicApp() {
 
   const [sounds, setSounds] = useState([]);
 
-
   useEffect(() => {
     fetchSoundsByCategory(categories[categoryIndex]);
   }, [categoryIndex]);
@@ -52,16 +49,13 @@ function MusicApp() {
   const fetchSoundsByCategory = async (category) => {
     setLoading(true);
     try {
-      // Stop the current audio if it exists
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
       }
-
-      // Create a new audio object and play it
-      const newAudio = new Audio(
-        `/audio/${category.toLowerCase().replace(" ", "_")}.mp3`
-      );
+      const filePath = `/audio/${category.toLowerCase().replace(" ", "_")}.mp3`;
+      console.log(`Fetching audio file: ${filePath}`);
+      const newAudio = new Audio(filePath);
       newAudio.play();
       setCurrentAudio(newAudio);
     } catch (error) {
@@ -215,20 +209,51 @@ function MusicApp() {
             </IconButton>
           </Button>
           <Box sx={{ mb: 3, textAlign: "center" }}>
-
-            <Typography variant="h6" sx={{ fontFamily: "Poppins, sans-serif", fontWeight: 500, color: "#1c2a48" }}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontFamily: "Poppins, sans-serif",
+                fontWeight: 500,
+                color: "#1c2a48",
+              }}
+            >
               How are you feeling?
             </Typography>
-            <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 1 }}>
-              <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😊</Typography>
-              <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😌</Typography>
-              <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😴</Typography>
-              <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😌</Typography>
-              <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😍</Typography>
+            <Box
+              sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 1 }}
+            >
+              <Typography
+                variant="body1"
+                sx={{ fontSize: "2rem", cursor: "pointer" }}
+              >
+                😊
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{ fontSize: "2rem", cursor: "pointer" }}
+              >
+                😌
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{ fontSize: "2rem", cursor: "pointer" }}
+              >
+                😴
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{ fontSize: "2rem", cursor: "pointer" }}
+              >
+                😌
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{ fontSize: "2rem", cursor: "pointer" }}
+              >
+                😍
+              </Typography>
             </Box>
           </Box>
-
-
 
           {/* Category Cards */}
           <Box
@@ -241,33 +266,35 @@ function MusicApp() {
               "&::-webkit-scrollbar": {
                 display: "none",
               },
-              "msOverflowStyle": "none", // for IE and Edge
-              "scrollbarWidth": "none", // for Firefox
+              msOverflowStyle: "none", // for IE and Edge
+              scrollbarWidth: "none", // for Firefox
             }}
           >
             {categories.map((category, index) => (
               <Card
                 key={index}
                 sx={{
-
                   width: {
-                    xs: "30%",  // 3 cards per row on extra small (mobile) screens
-                    sm: "30%",  // 3 cards per row on small screens
-                    md: "30%",  // 3 cards per row on medium screens
-                    lg: "18%",  // 5 cards per row on large screens
+                    xs: "30%", // 3 cards per row on extra small (mobile) screens
+                    sm: "30%", // 3 cards per row on small screens
+                    md: "30%", // 3 cards per row on medium screens
+                    lg: "18%", // 5 cards per row on large screens
                   },
-                  maxWidth: "200px",  // Max card width limit
-                  minWidth: "150px",  // Ensure a minimum width
+                  maxWidth: "200px", // Max card width limit
+                  minWidth: "150px", // Ensure a minimum width
                   height: "auto",
-                  backgroundColor: categoryIndex === index ? "#66acce" : "#4186b5",
+                  backgroundColor:
+                    categoryIndex === index ? "#66acce" : "#4186b5",
                   color: categoryIndex === index ? "white" : "#b3b3b3",
 
                   cursor: "pointer",
-                  transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+                  transition:
+                    "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
                   borderRadius: "20px",
-                  boxShadow: categoryIndex === index
-                    ? "0 8px 16px rgba(0, 0, 0, 0.2)"
-                    : "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  boxShadow:
+                    categoryIndex === index
+                      ? "0 8px 16px rgba(0, 0, 0, 0.2)"
+                      : "0 4px 8px rgba(0, 0, 0, 0.1)",
                   "&:hover": {
                     transform: "scale(1.05)",
                     boxShadow: "0 12px 24px rgba(0, 0, 0, 0.3)",
@@ -310,7 +337,6 @@ function MusicApp() {
                   {/* Image with Play Button Overlay */}
                   <Box
                     sx={{
-
                       height: "120px",
                       background: `url('/path_to_image/${category.toLowerCase()}.jpg') no-repeat center/cover`,
                       borderRadius: "12px",
@@ -377,19 +403,16 @@ function MusicApp() {
             ))}
 
             <style jsx>{`
-    @keyframes progressMove {
-      0% {
-        left: -100%;
-      }
-      100% {
-        left: 100%;
-      }
-    }
-  `}</style>
+              @keyframes progressMove {
+                0% {
+                  left: -100%;
+                }
+                100% {
+                  left: 100%;
+                }
+              }
+            `}</style>
           </Box>
-
-
-
         </Box>
       </Box>
 
