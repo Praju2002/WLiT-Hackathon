@@ -388,6 +388,7 @@ function MusicApp() {
                     {category}
                   </Typography>
                   <IconButton
+
                 onClick={() => handleFavoriteToggle(category)}
                 sx={{ position: "absolute", top: 10, right: 10 }}
               >
@@ -403,6 +404,7 @@ function MusicApp() {
                   
               
               </IconButton>
+
 
                   {/* Artist Name */}
                   <Typography
