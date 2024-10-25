@@ -161,6 +161,7 @@ function SoundSearch() {
             textAlign: "center",
           }}
         >
+
           <Typography
             variant="h4"
             sx={{
@@ -176,29 +177,40 @@ function SoundSearch() {
           </Typography>
           <TextField
             variant="outlined"
-            placeholder="Search Categories"
+            placeholder="Search Sounds"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ mb: 3, width: "100%", maxWidth: 400 }}
           />
-
+          <Box display="flex" alignItems="center" justifyContent="flex-end" mt={4}>
+            <VolumeUp sx={{ mr: 1 }} />
+            <Slider
+              value={volume}
+              min={0}
+              max={1}
+              step={0.01}
+              onChange={handleVolumeChange}
+              sx={{ width: "80%", maxWidth: 250, margin: "10px" }}
+            />
+          </Box>
           <Grid container spacing={2}>
             {filteredCategories.map((category, index) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                 <Card
-                sx={{
-                  backgroundColor: categoryIndex === index ? "#66acce" : "#4186b5",
-                  color: "#b3b3b3",
-                  cursor: "pointer",
-                  borderRadius: "20px",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  "&:hover": {
-                    backgroundColor: "#66acce",
-                    color: "white",
-                  },
-                }}
+                  sx={{
+                    backgroundColor: categoryIndex === index ? "#66acce" : "#4186b5",
+                    color: "#b3b3b3",
+                    cursor: "pointer",
+                    borderRadius: "20px",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    "&:hover": {
+                      backgroundColor: "#66acce",
+                      color: "white",
+                    },
+                  }}
                   onClick={() => playSound(category, index)}
                 >
+
                   <CardContent>
                     <Typography
                       variant="h6"
@@ -213,14 +225,14 @@ function SoundSearch() {
                       {category}
                     </Typography>
                     <Box display="flex" justifyContent="center" mt={2}>
-                    <IconButton
-  onClick={(event) => {
-    event.stopPropagation();
-    categoryIndex === index ? handlePlayPause() : playSound(category, index);
-  }}
->
-  {playing && categoryIndex === index ? <Pause /> : <PlayArrow />}
-</IconButton>
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          categoryIndex === index ? handlePlayPause() : playSound(category, index);
+                        }}
+                      >
+                        {playing && categoryIndex === index ? <Pause /> : <PlayArrow />}
+                      </IconButton>
 
 
                     </Box>
@@ -230,17 +242,7 @@ function SoundSearch() {
             ))}
           </Grid>
 
-          <Box display="flex" alignItems="center" justifyContent="center" mt={4}>
-            <VolumeUp sx={{ mr: 1 }} />
-            <Slider
-              value={volume}
-              min={0}
-              max={1}
-              step={0.01}
-              onChange={handleVolumeChange}
-              sx={{ width: "80%", maxWidth: 300 }}
-            />
-          </Box>
+
         </Box>
       </Box>
     </Box>
