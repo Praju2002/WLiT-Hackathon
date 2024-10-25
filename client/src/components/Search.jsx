@@ -41,7 +41,7 @@ function SearchComponent() {
       sx={{
         p: 3,
         gap: 2,
-        backgroundColor: "#f0f4f8",
+        background: "linear-gradient(0deg, #ffffff, #d4edf9)",
         borderRadius: "20px",
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
         width: "100%",
