@@ -35,7 +35,8 @@ const NavBar = () => {
       <List>
         {[{ text: 'Home', icon: <Home /> }, { text: 'Search', icon: <Search /> }, { text: 'My Favorites', icon: <Favorite /> }, { text: 'Playlists', icon: <PlaylistPlay /> }].map(
           (item, index) => (
-            <ListItem button key={index} component={item.text === 'Search' ? Link : 'div'} to={item.text === 'Search' ? '/search' : '#'} sx={{ '&:hover': { backgroundColor: 'white', borderRadius: '10px' } }}>
+            <ListItem button key={index} component={item.text === "Search" || item.text === "Home" ? Link : "div"}
+            to={item.text === "Search" ? "/search" : item.text === "Home" ? "/" : "#"} sx={{ '&:hover': { backgroundColor: 'white', borderRadius: '10px' } }}>
               {item.icon}
               <ListItemText primary={item.text} sx={{ color: 'black', fontFamily: 'Poppins, sans-serif', marginLeft: '15px' }} />
             </ListItem>
