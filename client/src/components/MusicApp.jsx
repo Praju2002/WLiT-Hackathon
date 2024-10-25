@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from "react";
+
+import React, { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
+
 import {
   AppBar,
   Toolbar,
@@ -35,7 +39,11 @@ function MusicApp() {
   const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(30);
+
   const [currentAudio, setCurrentAudio] = useState(null);
+
+  const [sounds, setSounds] = useState([]);
+
 
   useEffect(() => {
     fetchSoundsByCategory(categories[categoryIndex]);
@@ -187,14 +195,14 @@ function MusicApp() {
           <Button
             variant="contained"
             sx={{
-              backgroundColor: "#1e88e5",
+              backgroundColor: "#4186b5",
               color: "black",
               padding: "12px 24px",
               borderRadius: "30px",
               fontSize: "1.1rem",
               mb: 4,
               fontFamily: "Poppins, sans-serif",
-              "&:hover": { backgroundColor: "#1565c0" },
+              "&:hover": { backgroundColor: "#66acce" },
             }}
             onClick={handlePlayPause}
           >
@@ -207,51 +215,20 @@ function MusicApp() {
             </IconButton>
           </Button>
           <Box sx={{ mb: 3, textAlign: "center" }}>
-            <Typography
-              variant="h6"
-              sx={{
-                fontFamily: "Poppins, sans-serif",
-                fontWeight: 500,
-                color: "#1c2a48",
-              }}
-            >
+
+            <Typography variant="h6" sx={{ fontFamily: "Poppins, sans-serif", fontWeight: 500, color: "#1c2a48" }}>
               How are you feeling?
             </Typography>
-            <Box
-              sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 1 }}
-            >
-              <Typography
-                variant="body1"
-                sx={{ fontSize: "2rem", cursor: "pointer" }}
-              >
-                😊
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{ fontSize: "2rem", cursor: "pointer" }}
-              >
-                😌
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{ fontSize: "2rem", cursor: "pointer" }}
-              >
-                😴
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{ fontSize: "2rem", cursor: "pointer" }}
-              >
-                😌
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{ fontSize: "2rem", cursor: "pointer" }}
-              >
-                😍
-              </Typography>
+            <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 1 }}>
+              <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😊</Typography>
+              <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😌</Typography>
+              <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😴</Typography>
+              <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😌</Typography>
+              <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😍</Typography>
             </Box>
           </Box>
+
+
 
           {/* Category Cards */}
           <Box
@@ -259,76 +236,160 @@ function MusicApp() {
               display: "flex",
               justifyContent: "center",
               gap: 2,
-              overflowX: "auto",
+              flexWrap: "wrap", // Allow cards to wrap
               mb: 4,
               "&::-webkit-scrollbar": {
                 display: "none",
               },
-              "-ms-overflow-style": "none", // for Internet Explorer and Edge
-              "scrollbar-width": "none", // for Firefox
-              "&:hover": {
-                overflow: "hidden", // Hides scrollbar when hovering
-              },
+              "msOverflowStyle": "none", // for IE and Edge
+              "scrollbarWidth": "none", // for Firefox
             }}
           >
             {categories.map((category, index) => (
               <Card
                 key={index}
                 sx={{
-                  width: "180px",
-                  height: "200px",
-                  backgroundColor:
-                    categoryIndex === index ? "#1e88e5" : "#f0f4f8",
-                  color: categoryIndex === index ? "black" : "#1c2a48",
+
+                  width: {
+                    xs: "30%",  // 3 cards per row on extra small (mobile) screens
+                    sm: "30%",  // 3 cards per row on small screens
+                    md: "30%",  // 3 cards per row on medium screens
+                    lg: "18%",  // 5 cards per row on large screens
+                  },
+                  maxWidth: "200px",  // Max card width limit
+                  minWidth: "150px",  // Ensure a minimum width
+                  height: "auto",
+                  backgroundColor: categoryIndex === index ? "#66acce" : "#4186b5",
+                  color: categoryIndex === index ? "white" : "#b3b3b3",
+
                   cursor: "pointer",
-                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                  borderRadius: "15px",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.15)",
+                  transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+                  borderRadius: "20px",
+                  boxShadow: categoryIndex === index
+                    ? "0 8px 16px rgba(0, 0, 0, 0.2)"
+                    : "0 4px 8px rgba(0, 0, 0, 0.1)",
                   "&:hover": {
                     transform: "scale(1.05)",
-                    boxShadow: "0 12px 24px rgba(0, 0, 0, 0.2)",
+                    boxShadow: "0 12px 24px rgba(0, 0, 0, 0.3)",
                   },
+                  position: "relative", // To position play button and tape
+                  marginBottom: "20px", // Add bottom margin for wrapping
                 }}
                 onClick={() => handleCategoryChange(index)}
               >
-                <CardContent>
+                <CardContent sx={{ position: "relative" }}>
+                  {/* Category Title */}
                   <Typography
                     variant="h6"
                     sx={{
                       textAlign: "center",
                       fontFamily: "Poppins, sans-serif",
-                      fontSize: "1.2rem",
+                      fontSize: "1rem",
                       fontWeight: "bold",
-                      padding: "10px",
+                      padding: "5px",
+                      color: categoryIndex === index ? "white" : "#b3b3b3",
                     }}
                   >
                     {category}
                   </Typography>
+
+                  {/* Artist Name */}
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      textAlign: "center",
+                      fontFamily: "Poppins, sans-serif",
+                      fontSize: "0.8rem",
+                      fontWeight: "300",
+                      color: categoryIndex === index ? "#f0f0f0" : "#8a8a8a", // Lighter text for artist name
+                    }}
+                  >
+                    {`Artist ${index + 1}`} {/* Example artist name */}
+                  </Typography>
+
+                  {/* Image with Play Button Overlay */}
                   <Box
                     sx={{
-                      height: "100px",
-                      background: `url('/path_to_image/${category
-                        .toLowerCase()
-                        .replace(" ", "_")}.jpg') no-repeat center/cover`,
-                      borderRadius: "10px",
+
+                      height: "120px",
+                      background: `url('/path_to_image/${category.toLowerCase()}.jpg') no-repeat center/cover`,
+                      borderRadius: "12px",
+
                       marginTop: "10px",
+                      position: "relative",
+                      "&:hover .playButton": {
+                        opacity: 1, // Show play button on hover
+                      },
                     }}
-                  ></Box>
+                  >
+                    {/* Play Button */}
+                    <Box
+                      className="playButton"
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "rgba(0, 0, 0, 0.7)",
+                        borderRadius: "50%",
+                        width: "40px",
+                        height: "40px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        opacity: 0, // Hidden by default
+                        transition: "opacity 0.3s ease",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <PlayArrow sx={{ color: "white" }} />
+                    </Box>
+                  </Box>
+
+                  {/* Moving Tape / Progress Indicator */}
+                  {categoryIndex === index && (
+                    <Box
+                      sx={{
+                        height: "4px",
+                        backgroundColor: "#1ed760", // Spotify green color
+                        borderRadius: "2px",
+                        mt: 2,
+                        width: "100%",
+                        position: "relative",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "#1ed760",
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          animation: "progressMove 5s linear infinite", // Simulating progress movement
+                        }}
+                      ></Box>
+                    </Box>
+                  )}
                 </CardContent>
               </Card>
             ))}
+
+            <style jsx>{`
+    @keyframes progressMove {
+      0% {
+        left: -100%;
+      }
+      100% {
+        left: 100%;
+      }
+    }
+  `}</style>
           </Box>
 
-          <Typography
-            variant="h5"
-            sx={{
-              color: "#1c2a48",
-              fontFamily: "Poppins, sans-serif",
-              fontWeight: 500,
-            }}
-          >
-            Selected Category: {categories[categoryIndex]}
-          </Typography>
+
+
         </Box>
       </Box>
 
