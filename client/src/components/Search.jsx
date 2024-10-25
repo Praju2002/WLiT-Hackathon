@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Home, Search, Favorite, PlaylistPlay, VolumeUp, Pause, PlayArrow } from "@mui/icons-material";
-
+import InputAdornment from "@mui/material/InputAdornment";
 const categories = ["White Noise", "Rain", "Forest", "Ocean Waves", "Ambient"];
 
 function SoundSearch() {
@@ -103,8 +103,8 @@ function SoundSearch() {
           <ListItem
             button
             key={index}
-            component={item.text === "Search" || item.text === "Home" ? Link : "div"}
-            to={item.text === "Search" ? "/search" : item.text === "Home" ? "/" : "#"}
+            component={item.text === "Search" || item.text === "Home" || item.text === "My Favorites"? Link : "div"}
+            to={item.text === "Search" ? "/search" : item.text === "Home" ? "/" : item.text==="My Favorites"?"/favorites":"#"}
             sx={{
               "&:hover": { backgroundColor: "white", borderRadius: "10px" },
             }}
@@ -177,11 +177,19 @@ function SoundSearch() {
           </Typography>
           <TextField
             variant="outlined"
-            placeholder="Search Sounds"
+            placeholder="Search Categories"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ mb: 3, width: "100%", maxWidth: 400 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search /> {/* Add the Search icon here */}
+                </InputAdornment>
+              ),
+            }}
           />
+
           <Box display="flex" alignItems="center" justifyContent="flex-end" mt={4}>
             <VolumeUp sx={{ mr: 1 }} />
             <Slider
