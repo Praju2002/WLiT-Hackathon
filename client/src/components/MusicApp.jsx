@@ -37,7 +37,7 @@ function MusicApp() {
   const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(30);
-
+  const [favorites, setFavorites] = useState([]);
   const [currentAudio, setCurrentAudio] = useState(null);
 
   const [sounds, setSounds] = useState([]);
@@ -83,6 +83,13 @@ function MusicApp() {
       }
     }
   };
+  const handleFavoriteToggle = (category) => {
+    setFavorites((prevFavorites) =>
+      prevFavorites.includes(category)
+        ? prevFavorites.filter((item) => item !== category)
+        : [...prevFavorites, category]
+    );
+  };
 
   const drawerContent = (
     <Box
@@ -105,8 +112,8 @@ function MusicApp() {
           <ListItem
             button
             key={index}
-            component={item.text === "Search" ? Link : "div"}
-            to={item.text === "Search" ? "/search" : "#"}
+            component={item.text === "Search" || item.text === "Home" || item.text === "My Favorites"? Link : "div"}
+            to={item.text === "Search" ? "/search" : item.text === "Home" ? "/" : item.text==="My Favorites"?"/favorites":"#"}
             sx={{
               "&:hover": { backgroundColor: "white", borderRadius: "10px" },
             }}
@@ -319,6 +326,15 @@ function MusicApp() {
                   >
                     {category}
                   </Typography>
+                  <IconButton
+                onClick={() => handleFavoriteToggle(category)}
+                sx={{ position: "absolute", top: 10, right: 10 }}
+              >
+                <Favorite color={favorites.includes(category) ? "error" : "disabled"} />
+              </IconButton>
+              <IconButton onClick={() => setPlaying(!playing)}>
+                <PlayArrow />
+              </IconButton>
 
                   {/* Artist Name */}
                   <Typography
@@ -412,6 +428,7 @@ function MusicApp() {
                 }
               }
             `}</style>
+            
           </Box>
         </Box>
       </Box>
