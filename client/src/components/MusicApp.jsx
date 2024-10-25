@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
+
 import {
   AppBar,
   Toolbar,
@@ -17,7 +19,7 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Menu as MenuIcon, PlayArrow, SkipNext, SkipPrevious, Home, Search, Favorite, PlaylistPlay } from "@mui/icons-material";
-
+import { keyframes } from "@emotion/react";
 const categories = ["White Noise", "Rain", "Forest", "Ocean Waves", "Ambient"];
 
 function MusicApp() {
@@ -26,7 +28,20 @@ function MusicApp() {
   const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(30);
-
+  useEffect(() => {
+    fetchSoundsByCategory(categories[categoryIndex]);
+  }, [categoryIndex]);
+  const fetchSoundsByCategory = async (category) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/api/sounds/${category}`);
+      setSounds(response.data); // Set sounds fetched from API
+    } catch (error) {
+      console.error("Error fetching sounds:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCategoryChange = (index) => {
     setLoading(true);
@@ -93,7 +108,7 @@ function MusicApp() {
         <Box
           sx={{
             flex: 1,
-            backgroundColor: "#ffffff",
+            background: "linear-gradient(0deg, #ffffff, #d4edf9)", 
             borderRadius: "20px",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
             p: { xs: 3, md: 5 },
@@ -137,6 +152,19 @@ function MusicApp() {
               <PlayArrow />
             </IconButton>
           </Button>
+          <Box sx={{ mb: 3, textAlign: "center" }}>
+  <Typography variant="h6" sx={{ fontFamily: "Poppins, sans-serif", fontWeight: 500, color: "#1c2a48" }}>
+    How are you feeling?
+  </Typography>
+  <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 1 }}>
+    <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😊</Typography>
+    <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😌</Typography>
+    <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😴</Typography>
+    <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😌</Typography>
+    <Typography variant="body1" sx={{ fontSize: "2rem", cursor: "pointer" }}>😍</Typography>
+  </Box>
+</Box>
+
 
           {/* Category Cards */}
           <Box

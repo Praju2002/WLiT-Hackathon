@@ -3,15 +3,14 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#FFFFFF", // WHITE COLOR
+      main: "#FFFFFF", // White color
     },
     secondary: {
-      main: "#4edf9", 
-      
+      main: "#4edf9", // Secondary color
     },
-    accent: {
-      white: "#FFFFFF", // white COLOR
-      black: "#000000", // black color
+    text: {
+      primary: "#000000", // Black text color
+      secondary: "#FFFFFF", // White text color
     },
   },
   breakpoints: {
@@ -24,11 +23,10 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: "Roboto Slab",
-    fontWeightRegular:"400",
-    fontWeightMedium:"500",
-    fontWeightSemiBold:"600",
-    fontWeightBold:"700"
+    fontFamily: "'Poppins', 'Roboto Slab', sans-serif",
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+    fontWeightBold: 700,
   },
 });
 
