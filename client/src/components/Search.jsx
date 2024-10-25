@@ -187,7 +187,7 @@ function SoundSearch() {
               <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                 <Card
                 sx={{
-                  backgroundColor: "#4186b5",
+                  backgroundColor: categoryIndex === index ? "#66acce" : "#4186b5",
                   color: "#b3b3b3",
                   cursor: "pointer",
                   borderRadius: "20px",
