@@ -104,7 +104,7 @@ function SoundSearch() {
             button
             key={index}
             component={item.text === "Search" || item.text === "Home" || item.text === "My Favorites"? Link : "div"}
-            to={item.text === "Search" ? "/search" : item.text === "Home" ? "/" : item.text==="My Favorites"?"/favorites":"#"}
+            to={item.text === "Search" ? "/search" : item.text === "Home" ? "/music" : item.text==="My Favorites"?"/favorites":"#"}
             sx={{
               "&:hover": { backgroundColor: "white", borderRadius: "10px" },
             }}
