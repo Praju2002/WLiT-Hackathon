@@ -27,6 +27,7 @@ import {
   Search,
   Favorite,
   PlaylistPlay,
+  NoteAlt,
 } from "@mui/icons-material";
 import { keyframes } from "@emotion/react";
 
@@ -108,12 +109,33 @@ function MusicApp() {
           { text: "Search", icon: <Search /> },
           { text: "My Favorites", icon: <Favorite /> },
           { text: "Playlists", icon: <PlaylistPlay /> },
+          { text: "Journal", icon: <NoteAlt /> },
         ].map((item, index) => (
           <ListItem
             button
             key={index}
-            component={item.text === "Search" || item.text === "Home" || item.text === "My Favorites"? Link : "div"}
-            to={item.text === "Search" ? "/search" : item.text === "Home" ? "/music" : item.text==="My Favorites"?"/favorites":"#"}
+            component={
+              item.text === "Search" ||
+              item.text === "Home" ||
+              item.text === "My Favorites" ||
+              item.text === "Playlists" ||
+              item.text === "Journal"
+                ? Link
+                : "div"
+            }
+            to={
+              item.text === "Search"
+                ? "/search"
+                : item.text === "Home"
+                ? "/music"
+                : item.text === "My Favorites"
+                ? "/favorites"
+                : item.text === "Playlists"
+                ? "/playlists"
+                : item.text === "Journal"
+                ? "/diary"
+                : "#"
+            }
             sx={{
               "&:hover": { backgroundColor: "white", borderRadius: "10px" },
             }}
@@ -327,14 +349,18 @@ function MusicApp() {
                     {category}
                   </Typography>
                   <IconButton
-                onClick={() => handleFavoriteToggle(category)}
-                sx={{ position: "absolute", top: 10, right: 10 }}
-              >
-                <Favorite color={favorites.includes(category) ? "error" : "disabled"} />
-              </IconButton>
-              <IconButton onClick={() => setPlaying(!playing)}>
-                <PlayArrow />
-              </IconButton>
+                    onClick={() => handleFavoriteToggle(category)}
+                    sx={{ position: "absolute", top: 10, right: 10 }}
+                  >
+                    <Favorite
+                      color={
+                        favorites.includes(category) ? "error" : "disabled"
+                      }
+                    />
+                  </IconButton>
+                  <IconButton onClick={() => setPlaying(!playing)}>
+                    <PlayArrow />
+                  </IconButton>
 
                   {/* Artist Name */}
                   <Typography
@@ -428,7 +454,6 @@ function MusicApp() {
                 }
               }
             `}</style>
-            
           </Box>
         </Box>
       </Box>
