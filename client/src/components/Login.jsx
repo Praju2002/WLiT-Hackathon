@@ -24,7 +24,7 @@ const Login = () => {
 
     // If validation passes, navigate to the home page
     console.log("Validation passed");
-    navigate("/search"); // Navigate to the home page
+    navigate("/music"); // Navigate to the home page
   };
 
   return (
@@ -68,7 +68,7 @@ const styles = {
     justifyContent: 'center',
     height: '100vh',
     backgroundColor: '#e0f7fa', // Light teal background
-    color: '#4186B5', // Updated color
+    color: '#004d40', // Dark teal text
   },
   header: {
     fontSize: '2rem',
@@ -102,17 +102,17 @@ const styles = {
     padding: '0.5rem',
     fontSize: '1rem',
     borderRadius: '4px',
-    border: '1px solid #4186B5', // Updated color
+    border: '1px solid #004d40', // Dark teal border
   },
   button: {
     padding: '0.5rem 1rem',
     fontSize: '1rem',
     borderRadius: '4px',
     border: 'none',
-    backgroundColor: '#4186B5', // Updated color
+    backgroundColor: '#004d40', // Dark teal background
     color: '#ffffff', // White text
     cursor: 'pointer',
   },
-  };
+};
 
 export default Login;
