@@ -12,6 +12,7 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
+import { NoteAlt } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import {
   Home,
@@ -100,20 +101,23 @@ function SoundSearch() {
         boxShadow: "2px 0 8px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <List>
+       <List>
         {[
           { text: "Home", icon: <Home /> },
           { text: "Search", icon: <Search /> },
-          { text: "My Favorites", icon: <Favorite /> },
+          // { text: "My Favorites", icon: <Favorite /> },
           { text: "Playlists", icon: <PlaylistPlay /> },
+          { text: "Journal", icon: <NoteAlt /> },
         ].map((item, index) => (
           <ListItem
             button
             key={index}
             component={
               item.text === "Search" ||
-              item.text === "Home" ||
-              item.text === "My Favorites"
+                item.text === "Home" ||
+                // item.text === "My Favorites" ||
+                item.text === "Playlists" ||
+                item.text === "Journal"
                 ? Link
                 : "div"
             }
@@ -121,13 +125,17 @@ function SoundSearch() {
               item.text === "Search"
                 ? "/search"
                 : item.text === "Home"
-                ? "/music"
-                : item.text === "My Favorites"
-                ? "/favorites"
-                : "#"
+                  ? "/music"
+                  // : item.text === "My Favorites"
+                  //   ? "/favorites"
+                    : item.text === "Playlists"
+                      ? "/favorites"
+                      : item.text === "Journal"
+                        ? "/diary"
+                        : "#"
             }
             sx={{
-              "&:hover": { backgroundColor: "white", borderRadius: "10px" },
+              "&:hover": { backgroundColor: "white ", borderRadius: "10px", "& .MuiSvgIcon-root":{ color: "green"},},
             }}
           >
             {item.icon}
