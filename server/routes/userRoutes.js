@@ -63,7 +63,47 @@ router.get("/user/:id", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+router.post('/user/:id/favorite', async (req, res) => {
+  const { id } = req.params;
+  const { favoriteId } = req.body;
 
+  try {
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Check if favorite already exists
+    if (!user.favorites.includes(favoriteId)) {
+      user.favorites.push(favoriteId);
+      await user.save();
+      return res.status(200).json({ message: 'Favorite added' });
+    } else {
+      return res.status(400).json({ message: 'Favorite already exists' });
+    }
+  } catch (error) {
+    console.error('Error adding favorite:', error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// Remove favorite
+router.delete('/user/:id/favorite', async (req, res) => {
+  const { id } = req.params;
+  const { favoriteId } = req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Remove favorite
+    user.favorites = user.favorites.filter(fav => fav !== favoriteId);
+    await user.save();
+    
+    return res.status(200).json({ message: 'Favorite removed' });
+  } catch (error) {
+    console.error('Error removing favorite:', error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 // You can add more user-related routes here (e.g., create user, update user, etc.)
 
 module.exports = router;
