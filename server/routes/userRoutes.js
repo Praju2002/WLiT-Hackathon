@@ -49,11 +49,12 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/user/:id", async (req, res) => {
-  const userId = req.params.id;
+// Fetch user by email
+router.get("/user/:email", async (req, res) => {
+  const { email } = req.params;
 
   try {
-    const user = await User.findById(userId); // Fetch the user from the database
+    const user = await User.findOne({ email }); // Fetch the user using email
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -63,12 +64,16 @@ router.get("/user/:id", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.post('/user/:id/favorite', async (req, res) => {
-  const { id } = req.params;
+
+// Add a favorite using email
+router.post('/user/favorite/:email', async (req, res) => {
+  const { email } = req.params;
   const { favoriteId } = req.body;
+  console.log(email, favoriteId);
+  
 
   try {
-    const user = await User.findById(id);
+    const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     // Check if favorite already exists
@@ -85,13 +90,13 @@ router.post('/user/:id/favorite', async (req, res) => {
   }
 });
 
-// Remove favorite
-router.delete('/user/:id/favorite', async (req, res) => {
-  const { id } = req.params;
+// Remove a favorite using email
+router.delete('/user/:email/favorite', async (req, res) => {
+  const { email } = req.params;
   const { favoriteId } = req.body;
 
   try {
-    const user = await User.findById(id);
+    const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     // Remove favorite
@@ -104,6 +109,28 @@ router.delete('/user/:id/favorite', async (req, res) => {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+
+// Fetch user's favorites using email
+router.get('/user/:email/favorites', async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    console.log(`Fetching favorites for user: ${email}`);
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log(`Found user: ${user.email}, favorites: ${user.favorites}`);
+    res.status(200).json({ favorites: user.favorites });
+  } catch (error) {
+    console.error("Error fetching favorites:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+
 // You can add more user-related routes here (e.g., create user, update user, etc.)
 
 module.exports = router;
