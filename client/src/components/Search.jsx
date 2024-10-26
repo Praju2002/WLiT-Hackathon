@@ -24,7 +24,16 @@ import {
   PlayArrow,
 } from "@mui/icons-material";
 import InputAdornment from "@mui/material/InputAdornment";
-const categories = ["White Noise", "Rain", "Forest", "Ocean Waves", "Ambient"];
+const categories = [
+  "White Noise",
+  "Rain",
+  "Forest",
+  "Ocean Waves",
+  "Ambient",
+  "Meditation",
+  "Anger",
+  "Uplifting",
+];
 
 function SoundSearch() {
   const [loading, setLoading] = useState(false);
@@ -101,7 +110,7 @@ function SoundSearch() {
         boxShadow: "2px 0 8px rgba(0, 0, 0, 0.1)",
       }}
     >
-       <List>
+      <List>
         {[
           { text: "Home", icon: <Home /> },
           { text: "Search", icon: <Search /> },
@@ -114,10 +123,10 @@ function SoundSearch() {
             key={index}
             component={
               item.text === "Search" ||
-                item.text === "Home" ||
-                // item.text === "My Favorites" ||
-                item.text === "Playlists" ||
-                item.text === "Journal"
+              item.text === "Home" ||
+              // item.text === "My Favorites" ||
+              item.text === "Playlists" ||
+              item.text === "Journal"
                 ? Link
                 : "div"
             }
@@ -125,17 +134,21 @@ function SoundSearch() {
               item.text === "Search"
                 ? "/search"
                 : item.text === "Home"
-                  ? "/music"
-                  // : item.text === "My Favorites"
-                  //   ? "/favorites"
-                    : item.text === "Playlists"
-                      ? "/favorites"
-                      : item.text === "Journal"
-                        ? "/diary"
-                        : "#"
+                ? "/music"
+                : // : item.text === "My Favorites"
+                //   ? "/favorites"
+                item.text === "Playlists"
+                ? "/favorites"
+                : item.text === "Journal"
+                ? "/diary"
+                : "#"
             }
             sx={{
-              "&:hover": { backgroundColor: "white ", borderRadius: "10px", "& .MuiSvgIcon-root":{ color: "green"},},
+              "&:hover": {
+                backgroundColor: "white ",
+                borderRadius: "10px",
+                "& .MuiSvgIcon-root": { color: "green" },
+              },
             }}
           >
             {item.icon}
