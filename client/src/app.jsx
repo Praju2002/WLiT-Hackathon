@@ -9,6 +9,7 @@ import FavoritesPage from "./components/favorites";
 import Login from "./components/Login";
 import PersonalizedPlaylists from "./components/PersonalizedPlaylists";
 import Diary from "./components/Diary";
+import MoodTracker from "./components/MoodTracker";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="music" element={<MusicApp />} />{" "}
             <Route path="diary" element={<Diary />} />
+            <Route path="mood" element={<MoodTracker />} />
             {/* Add a route for MusicApp */}
             <Route path="*" element={<h1>Page not found</h1>} />
             <Route path="playlists" element={<PersonalizedPlaylists />} />

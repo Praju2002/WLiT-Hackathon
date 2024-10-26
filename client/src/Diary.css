@@ -1,47 +1,111 @@
 .diary-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .diary-form {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-  }
-  
-  .diary-textarea {
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: vertical;
-    min-height: 100px;
-  }
-  
-  .diary-submit-button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .diary-submit-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .diary-entries {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .diary-entry {
-    background-color: #f9f9f9;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #e0f7fa; /* Light blue background */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.diary-form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.emoji-container {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.emoji-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.emoji-button:hover {
+  transform: scale(1.2);
+}
+
+.emoji-button.selected {
+  transform: scale(1.2);
+  border: 2px solid #007bff;
+  border-radius: 50%;
+}
+
+.diary-textarea {
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 150px;
+  font-family: 'Dancing Script', cursive;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.diary-textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.diary-submit-button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.diary-submit-button:hover {
+  background-color: #0056b3;
+}
+
+.diary-entries {
+  list-style-type: none;
+  padding: 0;
+}
+
+.diary-entry {
+  background-color: #ffffff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.entry-emoji {
+  font-size: 24px;
+}
+
+.entry-timestamp {
+  font-size: 12px;
+  color: #888;
+}
+
+.entry-text {
+  font-size: 16px;
+}
+
+.mood-tracker-container {
+  margin-top: 20px;
+}
+
+.mood-counts {
+  margin-top: 10px;
+}

@@ -13,7 +13,15 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Home, Search, Favorite, PlaylistPlay, VolumeUp, Pause, PlayArrow } from "@mui/icons-material";
+import {
+  Home,
+  Search,
+  Favorite,
+  PlaylistPlay,
+  VolumeUp,
+  Pause,
+  PlayArrow,
+} from "@mui/icons-material";
 import InputAdornment from "@mui/material/InputAdornment";
 const categories = ["White Noise", "Rain", "Forest", "Ocean Waves", "Ambient"];
 
@@ -25,13 +33,12 @@ function SoundSearch() {
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
 
-
   // Play or pause sound based on the selected category
   const playSound = (category, index) => {
     // Pause and reset any currently playing audio
     if (currentAudio) {
       currentAudio.pause();
-      currentAudio.currentTime = 0;  // Reset the audio position
+      currentAudio.currentTime = 0; // Reset the audio position
       setCurrentAudio(null);
       setPlaying(false);
     }
@@ -43,7 +50,9 @@ function SoundSearch() {
     }
 
     // Set up new audio if a different category is clicked or current audio is paused
-    const newAudio = new Audio(`/audio/${category.toLowerCase().replace(" ", "_")}.mp3`);
+    const newAudio = new Audio(
+      `/audio/${category.toLowerCase().replace(" ", "_")}.mp3`
+    );
     newAudio.volume = volume;
     newAudio.play();
 
@@ -65,11 +74,9 @@ function SoundSearch() {
       } else {
         currentAudio.play();
       }
-      setPlaying(!playing);  // Toggle play/pause state
+      setPlaying(!playing); // Toggle play/pause state
     }
   };
-
-
 
   const handleVolumeChange = (event, newValue) => {
     setVolume(newValue);
@@ -103,8 +110,22 @@ function SoundSearch() {
           <ListItem
             button
             key={index}
-            component={item.text === "Search" || item.text === "Home" || item.text === "My Favorites"? Link : "div"}
-            to={item.text === "Search" ? "/search" : item.text === "Home" ? "/music" : item.text==="My Favorites"?"/favorites":"#"}
+            component={
+              item.text === "Search" ||
+              item.text === "Home" ||
+              item.text === "My Favorites"
+                ? Link
+                : "div"
+            }
+            to={
+              item.text === "Search"
+                ? "/search"
+                : item.text === "Home"
+                ? "/music"
+                : item.text === "My Favorites"
+                ? "/favorites"
+                : "#"
+            }
             sx={{
               "&:hover": { backgroundColor: "white", borderRadius: "10px" },
             }}
@@ -161,7 +182,6 @@ function SoundSearch() {
             textAlign: "center",
           }}
         >
-
           <Typography
             variant="h4"
             sx={{
@@ -190,7 +210,12 @@ function SoundSearch() {
             }}
           />
 
-          <Box display="flex" alignItems="center" justifyContent="flex-end" mt={4}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            mt={4}
+          >
             <VolumeUp sx={{ mr: 1 }} />
             <Slider
               value={volume}
@@ -206,7 +231,8 @@ function SoundSearch() {
               <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                 <Card
                   sx={{
-                    backgroundColor: categoryIndex === index ? "#66acce" : "#4186b5",
+                    backgroundColor:
+                      categoryIndex === index ? "#66acce" : "#4186b5",
                     color: "#b3b3b3",
                     cursor: "pointer",
                     borderRadius: "20px",
@@ -218,7 +244,6 @@ function SoundSearch() {
                   }}
                   onClick={() => playSound(category, index)}
                 >
-
                   <CardContent>
                     <Typography
                       variant="h6"
@@ -236,21 +261,23 @@ function SoundSearch() {
                       <IconButton
                         onClick={(event) => {
                           event.stopPropagation();
-                          categoryIndex === index ? handlePlayPause() : playSound(category, index);
+                          categoryIndex === index
+                            ? handlePlayPause()
+                            : playSound(category, index);
                         }}
                       >
-                        {playing && categoryIndex === index ? <Pause /> : <PlayArrow />}
+                        {playing && categoryIndex === index ? (
+                          <Pause />
+                        ) : (
+                          <PlayArrow />
+                        )}
                       </IconButton>
-
-
                     </Box>
                   </CardContent>
                 </Card>
               </Grid>
             ))}
           </Grid>
-
-
         </Box>
       </Box>
     </Box>
