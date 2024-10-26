@@ -35,23 +35,32 @@ function MusicApp() {
   const [currentTrack, setCurrentTrack] = useState({ title: "", artist: "" });
   const [favorites, setFavorites] = useState([]); // State to track favorites
 
+  const API_URL = "http://localhost:5000";
+  
   const toggleFavorite = async (category) => {
+    const email="test@example.com"
     try {
       let updatedFavorites;
+  
       if (favorites.some(fav => fav.category === category.category)) {
+        // Remove from favorites
         updatedFavorites = favorites.filter(fav => fav.category !== category.category);
         setFavorites(updatedFavorites);
-        await axios.delete(`/api/user/${userId}/favorite`, { data: { favoriteId: category.category } });
+        await axios.delete(`${API_URL}/api/user/favorite/${email}`, { data: { favoriteId: category.category } });
       } else {
+        // Add to favorites
         updatedFavorites = [...favorites, category];
         setFavorites(updatedFavorites);
-        await axios.post(`/api/user/${email}/favorite`, { favoriteId: category.category });
+        console.log("here");
+        
+        await axios.post(`${API_URL}/api/user/favorite/${email}`, { favoriteId: category.category });
       }
     } catch (error) {
       console.error("Error updating favorites:", error);
       // Optionally show a notification to the user
     }
   };
+  
   
 
   // Play or pause sound based on the selected category

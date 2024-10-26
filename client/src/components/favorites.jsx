@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Box,
     Typography,
@@ -6,54 +6,60 @@ import {
     CardContent,
     IconButton,
     Grid,
-    TextField,
     Slider,
     List,
     ListItem,
     ListItemText,
 } from "@mui/material";
-import { NoteAlt } from "@mui/icons-material";
+import { NoteAlt, Home, Search, Favorite, PlaylistPlay, VolumeUp, Pause, PlayArrow } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import {
-    Home,
-    Search,
-    Favorite,
-    PlaylistPlay,
-    VolumeUp,
-    Pause,
-    PlayArrow,
-} from "@mui/icons-material";
-import InputAdornment from "@mui/material/InputAdornment";
+
+const API_URL = "http://localhost:5000";
 const categories = ["White Noise", "Rain", "Forest", "Ocean Waves", "Ambient"];
 
 function Favorites() {
-    const [loading, setLoading] = useState(false);
+    const [favorites, setFavorites] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [categoryIndex, setCategoryIndex] = useState(null);
     const [currentAudio, setCurrentAudio] = useState(null);
     const [playing, setPlaying] = useState(false);
     const [volume, setVolume] = useState(0.5);
+    const userEmail = "test@example.com";
 
-    // Play or pause sound based on the selected category
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            try {
+                const response = await fetch(`${API_URL}/api/user/${userEmail}/favorites`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setFavorites(data.favorites); // Set the fetched favorites
+            } catch (error) {
+                console.error("Error fetching favorites:", error);
+            } finally {
+                setLoading(false); // Set loading to false after fetching
+            }
+        };
+
+        fetchFavorites();
+    }, [userEmail]);
+
     const playSound = (category, index) => {
-        // Pause and reset any currently playing audio
         if (currentAudio) {
             currentAudio.pause();
-            currentAudio.currentTime = 0; // Reset the audio position
+            currentAudio.currentTime = 0;
             setCurrentAudio(null);
             setPlaying(false);
         }
 
-        // If the clicked category is already playing, pause it
         if (categoryIndex === index && playing) {
             setPlaying(false);
             return;
         }
 
-        // Set up new audio if a different category is clicked or current audio is paused
-        const newAudio = new Audio(
-            `/audio/${category.toLowerCase().replace(" ", "_")}.mp3`
-        );
+        const newAudio = new Audio(`/audio/${category.toLowerCase().replace(" ", "_")}.mp3`);
         newAudio.volume = volume;
         newAudio.play();
 
@@ -61,7 +67,6 @@ function Favorites() {
         setPlaying(true);
         setCategoryIndex(index);
 
-        // Set playing to false once audio ends
         newAudio.onended = () => {
             setPlaying(false);
             setCurrentAudio(null);
@@ -75,7 +80,7 @@ function Favorites() {
             } else {
                 currentAudio.play();
             }
-            setPlaying(!playing); // Toggle play/pause state
+            setPlaying(!playing);
         }
     };
 
@@ -86,8 +91,8 @@ function Favorites() {
         }
     };
 
-    const filteredCategories = categories.filter((category) =>
-        category.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredFavorites = favorites.filter((favorite) =>
+        favorite.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const drawerContent = (
@@ -101,55 +106,27 @@ function Favorites() {
                 boxShadow: "2px 0 8px rgba(0, 0, 0, 0.1)",
             }}
         >
-       <List>
-        {[
-          { text: "Home", icon: <Home /> },
-          { text: "Search", icon: <Search /> },
-          // { text: "My Favorites", icon: <Favorite /> },
-          { text: "Playlists", icon: <PlaylistPlay /> },
-          { text: "Journal", icon: <NoteAlt /> },
-        ].map((item, index) => (
-          <ListItem
-            button
-            key={index}
-            component={
-              item.text === "Search" ||
-                item.text === "Home" ||
-                // item.text === "My Favorites" ||
-                item.text === "Playlists" ||
-                item.text === "Journal"
-                ? Link
-                : "div"
-            }
-            to={
-              item.text === "Search"
-                ? "/search"
-                : item.text === "Home"
-                  ? "/music"
-                  // : item.text === "My Favorites"
-                  //   ? "/favorites"
-                    : item.text === "Playlists"
-                      ? "/favorites"
-                      : item.text === "Journal"
-                        ? "/diary"
-                        : "#"
-            }
-            sx={{
-              "&:hover": { backgroundColor: "white ", borderRadius: "10px", "& .MuiSvgIcon-root":{ color: "green"},},
-            }}
-          >
-            {item.icon}
-            <ListItemText
-              primary={item.text}
-              sx={{
-                color: "black",
-                fontFamily: "Poppins, sans-serif",
-                marginLeft: "15px",
-              }}
-            />
-          </ListItem>
-        ))}
-      </List>
+            <List>
+                {[
+                    { text: "Home", icon: <Home /> },
+                    { text: "Search", icon: <Search /> },
+                    { text: "Playlists", icon: <PlaylistPlay /> },
+                    { text: "Journal", icon: <NoteAlt /> },
+                ].map((item, index) => (
+                    <ListItem
+                        button
+                        key={index}
+                        component={Link}
+                        to={item.text === "Search" ? "/search" : item.text === "Home" ? "/music" : item.text === "Playlists" ? "/favorites" : "/diary"}
+                        sx={{
+                            "&:hover": { backgroundColor: "white ", borderRadius: "10px", "& .MuiSvgIcon-root": { color: "green" } },
+                        }}
+                    >
+                        {item.icon}
+                        <ListItemText primary={item.text} sx={{ color: "black", fontFamily: "Poppins, sans-serif", marginLeft: "15px" }} />
+                    </ListItem>
+                ))}
+            </List>
         </Box>
     );
 
@@ -171,12 +148,7 @@ function Favorites() {
                     gap: { xs: 2, md: 4 },
                 }}
             >
-                <Box
-                    sx={{
-                        display: { xs: "none", md: "block" },
-                        width: "250px",
-                    }}
-                >
+                <Box sx={{ display: { xs: "none", md: "block" }, width: "250px" }}>
                     {drawerContent}
                 </Box>
 
@@ -204,14 +176,7 @@ function Favorites() {
                         {loading ? "Loading..." : "Your Personalized Sounds"}
                     </Typography>
 
-
-
-                    <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="flex-end"
-                        mt={4}
-                    >
+                    <Box display="flex" alignItems="center" justifyContent="flex-end" mt={4}>
                         <VolumeUp sx={{ mr: 1 }} />
                         <Slider
                             value={volume}
@@ -222,13 +187,13 @@ function Favorites() {
                             sx={{ width: "80%", maxWidth: 250, margin: "10px" }}
                         />
                     </Box>
+
                     <Grid container spacing={2}>
-                        {filteredCategories.map((category, index) => (
+                        {filteredFavorites.map((favorite, index) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                                 <Card
                                     sx={{
-                                        backgroundColor:
-                                            categoryIndex === index ? "#66acce" : "#4186b5",
+                                        backgroundColor: categoryIndex === index ? "#66acce" : "#4186b5",
                                         color: "#b3b3b3",
                                         cursor: "pointer",
                                         borderRadius: "20px",
@@ -238,7 +203,7 @@ function Favorites() {
                                             color: "white",
                                         },
                                     }}
-                                    onClick={() => playSound(category, index)}
+                                    onClick={() => playSound(favorite, index)}
                                 >
                                     <CardContent>
                                         <Typography
@@ -251,7 +216,7 @@ function Favorites() {
                                                 padding: "5px",
                                             }}
                                         >
-                                            {category}
+                                            {favorite}
                                         </Typography>
                                         <Box display="flex" justifyContent="center" mt={2}>
                                             <IconButton
@@ -259,14 +224,10 @@ function Favorites() {
                                                     event.stopPropagation();
                                                     categoryIndex === index
                                                         ? handlePlayPause()
-                                                        : playSound(category, index);
+                                                        : playSound(favorite, index);
                                                 }}
                                             >
-                                                {playing && categoryIndex === index ? (
-                                                    <Pause />
-                                                ) : (
-                                                    <PlayArrow />
-                                                )}
+                                                {playing && categoryIndex === index ? <Pause /> : <PlayArrow />}
                                             </IconButton>
                                         </Box>
                                     </CardContent>
