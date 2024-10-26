@@ -13,9 +13,18 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import img from '../assets/PngItem_3784107.png';
+import img from "../assets/PngItem_3784107.png";
 import { Link } from "react-router-dom";
-import { Home, Search, Favorite, PlaylistPlay, VolumeUp, Pause, PlayArrow, NoteAlt, } from "@mui/icons-material";
+import {
+  Home,
+  Search,
+  Favorite,
+  PlaylistPlay,
+  VolumeUp,
+  Pause,
+  PlayArrow,
+  NoteAlt,
+} from "@mui/icons-material";
 import InputAdornment from "@mui/material/InputAdornment";
 // const categories = ["White Noise", "Rain", "Forest", "Ocean Waves", "Ambient"];
 const categories = [
@@ -24,6 +33,9 @@ const categories = [
   { title: "Forest Vibes", artist: "Nature", category: "Forest" },
   { title: "Ocean Waves", artist: "Relaxation", category: "Ocean Waves" },
   { title: "Ambient", artist: "Chill Atmosphere", category: "Ambient" },
+  { title: "Meditation", artist: "Meditation", category: "Guided Meditation" },
+  { title: "Anger", artist: "Anger Management", category: "Anger" },
+  { title: "Uplifting", artist: "Aleksandar -Pixabay", category: "Uplifting" },
 ];
 function MusicApp() {
   const [loading, setLoading] = useState(false);
@@ -36,39 +48,43 @@ function MusicApp() {
   const [favorites, setFavorites] = useState([]); // State to track favorites
 
   const API_URL = "http://localhost:5000";
-  
+
   const toggleFavorite = async (category) => {
-    const email="test@example.com"
+    const email = "test@example.com";
     try {
       let updatedFavorites;
-  
-      if (favorites.some(fav => fav.category === category.category)) {
+
+      if (favorites.some((fav) => fav.category === category.category)) {
         // Remove from favorites
-        updatedFavorites = favorites.filter(fav => fav.category !== category.category);
+        updatedFavorites = favorites.filter(
+          (fav) => fav.category !== category.category
+        );
         setFavorites(updatedFavorites);
-        await axios.delete(`${API_URL}/api/user/favorite/${email}`, { data: { favoriteId: category.category } });
+        await axios.delete(`${API_URL}/api/user/favorite/${email}`, {
+          data: { favoriteId: category.category },
+        });
       } else {
         // Add to favorites
         updatedFavorites = [...favorites, category];
         setFavorites(updatedFavorites);
         console.log("here");
-        
-        await axios.post(`${API_URL}/api/user/favorite/${email}`, { favoriteId: category.category });
+
+        await axios.post(`${API_URL}/api/user/favorite/${email}`, {
+          favoriteId: category.category,
+        });
       }
     } catch (error) {
       console.error("Error updating favorites:", error);
       // Optionally show a notification to the user
     }
   };
-  
-  
 
   // Play or pause sound based on the selected category
   const playSound = (category, index) => {
     // Pause and reset any currently playing audio
     if (currentAudio) {
       currentAudio.pause();
-      currentAudio.currentTime = 0;  // Reset the audio position
+      currentAudio.currentTime = 0; // Reset the audio position
       setCurrentAudio(null);
       setPlaying(false);
     }
@@ -79,7 +95,9 @@ function MusicApp() {
       return;
     }
 
-    const newAudio = new Audio(`/audio/${category.category.toLowerCase().replace(" ", "_")}.mp3`);
+    const newAudio = new Audio(
+      `/audio/${category.category.toLowerCase().replace(" ", "_")}.mp3`
+    );
     newAudio.volume = volume;
     newAudio.play();
 
@@ -87,7 +105,6 @@ function MusicApp() {
     setPlaying(true);
     setCategoryIndex(index);
     setCurrentTrack({ title: category.title, artist: category.artist });
-
 
     // Set playing to false once audio ends
     newAudio.onended = () => {
@@ -103,11 +120,9 @@ function MusicApp() {
       } else {
         currentAudio.play();
       }
-      setPlaying(!playing);  // Toggle play/pause state
+      setPlaying(!playing); // Toggle play/pause state
     }
   };
-
-
 
   const handleVolumeChange = (event, newValue) => {
     setVolume(newValue);
@@ -167,10 +182,10 @@ function MusicApp() {
             key={index}
             component={
               item.text === "Search" ||
-                item.text === "Home" ||
-                // item.text === "My Favorites" ||
-                item.text === "Playlists" ||
-                item.text === "Journal"
+              item.text === "Home" ||
+              // item.text === "My Favorites" ||
+              item.text === "Playlists" ||
+              item.text === "Journal"
                 ? Link
                 : "div"
             }
@@ -178,17 +193,21 @@ function MusicApp() {
               item.text === "Search"
                 ? "/search"
                 : item.text === "Home"
-                  ? "/music"
-                  // : item.text === "My Favorites"
-                  //   ? "/favorites"
-                    : item.text === "Playlists"
-                      ? "/favorites"
-                      : item.text === "Journal"
-                        ? "/diary"
-                        : "#"
+                ? "/music"
+                : // : item.text === "My Favorites"
+                //   ? "/favorites"
+                item.text === "Playlists"
+                ? "/favorites"
+                : item.text === "Journal"
+                ? "/diary"
+                : "#"
             }
             sx={{
-              "&:hover": { backgroundColor: "white ", borderRadius: "10px", "& .MuiSvgIcon-root":{ color: "green"},},
+              "&:hover": {
+                backgroundColor: "white ",
+                borderRadius: "10px",
+                "& .MuiSvgIcon-root": { color: "green" },
+              },
             }}
           >
             {item.icon}
@@ -243,8 +262,15 @@ function MusicApp() {
             textAlign: "center",
           }}
         >
-
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", mt: 4 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              mt: 4,
+            }}
+          >
             <Typography
               variant="h4"
               sx={{
@@ -261,7 +287,14 @@ function MusicApp() {
             </Typography>
 
             {/* Container for the rotating CD and track information */}
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 3 }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                mt: 3,
+              }}
+            >
               {/* Rotating CD animation */}
               <Box sx={styles.cdContainer}>
                 <Box
@@ -273,18 +306,32 @@ function MusicApp() {
               </Box>
 
               {/* Track information */}
-              <Typography variant="h5" sx={{ color: "#1c2a48", mt: 2, fontWeight: "bold", textAlign: "center" }}>
+              <Typography
+                variant="h5"
+                sx={{
+                  color: "#1c2a48",
+                  mt: 2,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
                 {currentTrack.title || "Select a track"}
               </Typography>
-              <Typography variant="subtitle1" sx={{ color: "#666", textAlign: "center" }}>
+              <Typography
+                variant="subtitle1"
+                sx={{ color: "#666", textAlign: "center" }}
+              >
                 {currentTrack.artist || ""}
               </Typography>
             </Box>
           </Box>
 
-
-
-          <Box display="flex" alignItems="center" justifyContent="flex-end" mb={2}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            mb={2}
+          >
             <VolumeUp sx={{ color: "#1c2a48", mr: 1 }} />
             <Slider
               orientation="vertical"
@@ -295,13 +342,13 @@ function MusicApp() {
               onChange={handleVolumeChange}
               sx={{
                 height: 100,
-                '& .MuiSlider-track': {
+                "& .MuiSlider-track": {
                   backgroundColor: "#66acce",
                 },
-                '& .MuiSlider-rail': {
+                "& .MuiSlider-rail": {
                   backgroundColor: "#cfd8dc",
                 },
-                '& .MuiSlider-thumb': {
+                "& .MuiSlider-thumb": {
                   backgroundColor: "#1c2a48",
                 },
               }}
@@ -312,9 +359,10 @@ function MusicApp() {
               <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                 <Card
                   sx={{
-                    background: categoryIndex === index
-                      ? "linear-gradient(135deg, #66acce, #4e92b2)"
-                      : "linear-gradient(135deg, #4186b5, #356c94)",
+                    background:
+                      categoryIndex === index
+                        ? "linear-gradient(135deg, #66acce, #4e92b2)"
+                        : "linear-gradient(135deg, #4186b5, #356c94)",
                     color: "#fff",
                     cursor: "pointer",
                     borderRadius: "25px",
@@ -362,7 +410,9 @@ function MusicApp() {
                       <IconButton
                         onClick={(event) => {
                           event.stopPropagation();
-                          categoryIndex === index ? handlePlayPause() : playSound(category, index);
+                          categoryIndex === index
+                            ? handlePlayPause()
+                            : playSound(category, index);
                         }}
                         sx={{
                           backgroundColor: "#ffffff33",
@@ -370,14 +420,24 @@ function MusicApp() {
                           "&:hover": { backgroundColor: "#ffffff55" },
                         }}
                       >
-                        {playing && categoryIndex === index ? <Pause fontSize="large" /> : <PlayArrow fontSize="large" />}
+                        {playing && categoryIndex === index ? (
+                          <Pause fontSize="large" />
+                        ) : (
+                          <PlayArrow fontSize="large" />
+                        )}
                       </IconButton>
                       <IconButton
                         onClick={(event) => {
                           event.stopPropagation();
                           toggleFavorite(category); // Toggle favorite on click
                         }}
-                        sx={{ color: favorites.some(fav => fav.category === category.category) ? "red" : "black" }} // Change color based on favorite status
+                        sx={{
+                          color: favorites.some(
+                            (fav) => fav.category === category.category
+                          )
+                            ? "red"
+                            : "black",
+                        }} // Change color based on favorite status
                       >
                         <Favorite />
                       </IconButton>
@@ -387,9 +447,6 @@ function MusicApp() {
               </Grid>
             ))}
           </Grid>
-
-
-
         </Box>
       </Box>
     </Box>
