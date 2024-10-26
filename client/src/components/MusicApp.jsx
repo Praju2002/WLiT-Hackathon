@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Box,
   Typography,
@@ -32,7 +33,33 @@ function MusicApp() {
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [currentTrack, setCurrentTrack] = useState({ title: "", artist: "" });
+  const [favorites, setFavorites] = useState([]); // State to track favorites
 
+  const toggleFavorite = async (category) => {
+    try {
+      let updatedFavorites;
+      // Check if the category is already in favorites
+      if (favorites.some(fav => fav.category === category.category)) {
+        // Remove from favorites
+        updatedFavorites = favorites.filter(fav => fav.category !== category.category);
+        setFavorites(updatedFavorites);
+        
+        // Send DELETE request to the backend
+        await axios.delete(`/api/user/${userId}/favorite`, { data: { favoriteId: category.category } });
+      } else {
+        // Add to favorites
+        updatedFavorites = [...favorites, category];
+        setFavorites(updatedFavorites);
+        
+        // Send POST request to the backend
+        await axios.post(`/api/user/${email}/favorite`, { favoriteId: category.category });
+      }
+    } catch (error) {
+      console.error("Error updating favorites:", error);
+      // Optionally show a notification to the user
+    }
+  };
+  
 
   // Play or pause sound based on the selected category
   const playSound = (category, index) => {
@@ -215,43 +242,43 @@ function MusicApp() {
           }}
         >
 
-<Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", mt: 4 }}>
-  <Typography
-    variant="h4"
-    sx={{
-      mb: 2,
-      fontFamily: "Poppins, serif",
-      color: "#1c2a48",
-      fontWeight: 600,
-      letterSpacing: 1.2,
-      fontSize: { xs: "1.5rem", md: "2rem" },
-      textAlign: "center", // Ensures the text is centered properly
-    }}
-  >
-    {loading ? "Loading..." : "Now Playing"}
-  </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", mt: 4 }}>
+            <Typography
+              variant="h4"
+              sx={{
+                mb: 2,
+                fontFamily: "Poppins, serif",
+                color: "#1c2a48",
+                fontWeight: 600,
+                letterSpacing: 1.2,
+                fontSize: { xs: "1.5rem", md: "2rem" },
+                textAlign: "center", // Ensures the text is centered properly
+              }}
+            >
+              {loading ? "Loading..." : "Now Playing"}
+            </Typography>
 
-  {/* Container for the rotating CD and track information */}
-  <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 3 }}>
-    {/* Rotating CD animation */}
-    <Box sx={styles.cdContainer}>
-      <Box
-        sx={{
-          ...styles.cdImage,
-          animation: playing ? "spin 4s linear infinite" : "none", // Animation for playing state
-        }}
-      />
-    </Box>
+            {/* Container for the rotating CD and track information */}
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 3 }}>
+              {/* Rotating CD animation */}
+              <Box sx={styles.cdContainer}>
+                <Box
+                  sx={{
+                    ...styles.cdImage,
+                    animation: playing ? "spin 4s linear infinite" : "none", // Animation for playing state
+                  }}
+                />
+              </Box>
 
-    {/* Track information */}
-    <Typography variant="h5" sx={{ color: "#1c2a48", mt: 2, fontWeight: "bold", textAlign: "center" }}>
-      {currentTrack.title || "Select a track"}
-    </Typography>
-    <Typography variant="subtitle1" sx={{ color: "#666", textAlign: "center" }}>
-      {currentTrack.artist || ""}
-    </Typography>
-  </Box>
-</Box>
+              {/* Track information */}
+              <Typography variant="h5" sx={{ color: "#1c2a48", mt: 2, fontWeight: "bold", textAlign: "center" }}>
+                {currentTrack.title || "Select a track"}
+              </Typography>
+              <Typography variant="subtitle1" sx={{ color: "#666", textAlign: "center" }}>
+                {currentTrack.artist || ""}
+              </Typography>
+            </Box>
+          </Box>
 
 
 
@@ -317,7 +344,7 @@ function MusicApp() {
                     >
                       {category.title}
                     </Typography>
-                    
+
                     <Typography
                       variant="subtitle2"
                       sx={{
@@ -342,6 +369,15 @@ function MusicApp() {
                         }}
                       >
                         {playing && categoryIndex === index ? <Pause fontSize="large" /> : <PlayArrow fontSize="large" />}
+                      </IconButton>
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          toggleFavorite(category); // Toggle favorite on click
+                        }}
+                        sx={{ color: favorites.some(fav => fav.category === category.category) ? "red" : "black" }} // Change color based on favorite status
+                      >
+                        <Favorite />
                       </IconButton>
                     </Box>
                   </CardContent>
