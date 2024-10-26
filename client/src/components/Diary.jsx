@@ -70,7 +70,9 @@ function Diary() {
             <button
               type="button"
               key={emoji}
-              className={`emoji-button ${selectedEmoji === emoji ? "selected" : ""}`}
+              className={`emoji-button ${
+                selectedEmoji === emoji ? "selected" : ""
+              }`}
               onClick={() => handleEmojiClick(emoji)}
             >
               {emoji}
