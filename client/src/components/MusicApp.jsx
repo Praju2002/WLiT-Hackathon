@@ -38,20 +38,13 @@ function MusicApp() {
   const toggleFavorite = async (category) => {
     try {
       let updatedFavorites;
-      // Check if the category is already in favorites
       if (favorites.some(fav => fav.category === category.category)) {
-        // Remove from favorites
         updatedFavorites = favorites.filter(fav => fav.category !== category.category);
         setFavorites(updatedFavorites);
-        
-        // Send DELETE request to the backend
         await axios.delete(`/api/user/${userId}/favorite`, { data: { favoriteId: category.category } });
       } else {
-        // Add to favorites
         updatedFavorites = [...favorites, category];
         setFavorites(updatedFavorites);
-        
-        // Send POST request to the backend
         await axios.post(`/api/user/${email}/favorite`, { favoriteId: category.category });
       }
     } catch (error) {
@@ -156,7 +149,7 @@ function MusicApp() {
         {[
           { text: "Home", icon: <Home /> },
           { text: "Search", icon: <Search /> },
-          { text: "My Favorites", icon: <Favorite /> },
+          // { text: "My Favorites", icon: <Favorite /> },
           { text: "Playlists", icon: <PlaylistPlay /> },
           { text: "Journal", icon: <NoteAlt /> },
         ].map((item, index) => (
@@ -166,7 +159,7 @@ function MusicApp() {
             component={
               item.text === "Search" ||
                 item.text === "Home" ||
-                item.text === "My Favorites" ||
+                // item.text === "My Favorites" ||
                 item.text === "Playlists" ||
                 item.text === "Journal"
                 ? Link
@@ -177,16 +170,16 @@ function MusicApp() {
                 ? "/search"
                 : item.text === "Home"
                   ? "/music"
-                  : item.text === "My Favorites"
-                    ? "/favorites"
+                  // : item.text === "My Favorites"
+                  //   ? "/favorites"
                     : item.text === "Playlists"
-                      ? "/playlists"
+                      ? "/favorites"
                       : item.text === "Journal"
                         ? "/diary"
                         : "#"
             }
             sx={{
-              "&:hover": { backgroundColor: "white", borderRadius: "10px" },
+              "&:hover": { backgroundColor: "white ", borderRadius: "10px", "& .MuiSvgIcon-root":{ color: "green"},},
             }}
           >
             {item.icon}
