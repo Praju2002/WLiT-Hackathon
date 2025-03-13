@@ -3,11 +3,14 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const authRoutes = require("./routes/auth"); // Import the auth routes
 const cors = require('cors');
-app.use(cors());
+
 
 const app = express();
+app.use(cors());
+
+
 app.use(bodyParser.json());
-app.use("/api", authRoutes); // Use auth routes with "/api" prefix
+// app.use("/api", authRoutes); // Use auth routes with "/api" prefix
 
 // MongoDB connection
 mongoose.connect("mongodb://localhost:27017/sound_therapy", {
